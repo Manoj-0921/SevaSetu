@@ -1,0 +1,28 @@
+name: Local Assistant
+version: 1.0.0
+schema: v1
+models:
+  - name: Gemma4 E4B 
+    provider: ollama
+    apiBase: http://192.168.178.101:11434/
+    apiKey: sk-167b4974778a4fe2bc7a9e54656d4314
+    # env:
+    #   useLegacyCompletionsEndpoint: false
+    model: gemma4:e4b
+    promptTemplates:
+      apply: |
+        Original: {{{original_code}}}
+        New: {{{new_code}}}
+    roles:
+      - apply
+      - chat
+      - edit
+
+context:
+  - provider: code
+  - provider: docs
+  - provider: diff
+  - provider: terminal
+  - provider: problems
+  - provider: folder
+  - provider: codebase
