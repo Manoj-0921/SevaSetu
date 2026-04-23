@@ -100,8 +100,8 @@ const BookAppointment = () => {
                 doctorId: id,
                 ...bookingData
             });
-            setStatus({ type: 'success', msg: 'Appointment booked successfully!' });
-            setTimeout(() => navigate('/dashboard'), 2000);
+            setStatus({ type: 'success', msg: 'Appointment requested successfully! Pending doctor confirmation.' });
+            setTimeout(() => navigate('/dashboard'), 2500);
         } catch (err) {
             setStatus({ type: 'error', msg: err.response?.data?.msg || 'Booking failed.' });
         } finally {

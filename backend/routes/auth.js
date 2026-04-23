@@ -29,6 +29,7 @@ router.post('/register', async (req, res) => {
             dateOfBirth,
             address,
             role: req.body.role === 'doctor' ? 'doctor' : 'patient',
+            isVerified: true,
         });
 
         res.status(201).json({

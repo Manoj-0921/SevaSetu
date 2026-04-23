@@ -58,7 +58,7 @@ const PatientDashboard = () => {
                                     background: apt.status === 'confirmed' ? 'rgba(16,185,129,0.2)' : 'rgba(59,130,246,0.1)',
                                     color: apt.status === 'confirmed' ? 'var(--color-secondary)' : 'var(--color-primary)'
                                 }}>
-                                    {apt.status.toUpperCase()}
+                                    {apt.status === 'pending' ? 'PENDING APPROVAL' : apt.status.toUpperCase()}
                                 </span>
                                 <span style={{ color: 'var(--color-text-muted)', fontSize: '0.85rem' }}>ID: {apt._id.slice(-6)}</span>
                             </div>

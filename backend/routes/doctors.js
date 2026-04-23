@@ -17,6 +17,11 @@ router.get('/', async (req, res) => {
         if (available === 'true') {
             filter.isAvailable = true;
         }
+        if (req.user?.role === 'admin') {
+            // Admin can see all doctors including unverified
+        } else {
+            filter.isVerified = true;
+        }
 
         const doctors = await User.find(filter).select('-password');
         res.json({ doctors });

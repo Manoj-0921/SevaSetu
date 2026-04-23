@@ -43,6 +43,18 @@ router.get('/users', protect, isAdmin, async (req, res) => {
     }
 });
 
+// @route   GET /api/admin/doctors/pending
+// @desc    Get unverified doctors for admin review
+// @access  Private (Admin)
+router.get('/doctors/pending', protect, isAdmin, async (req, res) => {
+    try {
+        const doctors = await User.find({ role: 'doctor', isVerified: false }).select('-password');
+        res.json({ doctors });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
 // @route   POST /api/admin/doctors
 // @desc    Create a doctor account
 // @access  Private (Admin)
@@ -71,6 +83,7 @@ router.post('/doctors', protect, isAdmin, async (req, res) => {
             availableTimeStart: availableTimeStart || '09:00 AM',
             availableTimeEnd: availableTimeEnd || '05:00 PM',
             role: 'doctor',
+            isVerified: true,
         });
 
         res.status(201).json({ msg: 'Doctor created successfully', doctor });
@@ -91,6 +104,37 @@ router.delete('/users/:id', protect, isAdmin, async (req, res) => {
 
         await User.deleteOne({ _id: req.params.id });
         res.json({ msg: 'User deleted successfully' });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+// @route   PUT /api/admin/doctors/:id/verify
+// @desc    Verify a doctor
+// @access  Private (Admin)
+router.put('/doctors/:id/verify', protect, isAdmin, async (req, res) => {
+    try {
+        const doctor = await User.findOne({ _id: req.params.id, role: 'doctor' });
+        if (!doctor) return res.status(404).json({ msg: 'Doctor not found' });
+
+        doctor.isVerified = true;
+        await doctor.save();
+        res.json({ msg: 'Doctor verified successfully', doctor });
+    } catch (err) {
+        res.status(500).json({ msg: 'Server error' });
+    }
+});
+
+// @route   PUT /api/admin/doctors/:id/reject
+// @desc    Reject a doctor
+// @access  Private (Admin)
+router.put('/doctors/:id/reject', protect, isAdmin, async (req, res) => {
+    try {
+        const doctor = await User.findOne({ _id: req.params.id, role: 'doctor' });
+        if (!doctor) return res.status(404).json({ msg: 'Doctor not found' });
+
+        await User.deleteOne({ _id: req.params.id });
+        res.json({ msg: 'Doctor rejected and removed' });
     } catch (err) {
         res.status(500).json({ msg: 'Server error' });
     }
